@@ -930,16 +930,40 @@ class Help
             self::sys_out_fail();
     }
 
-    // 检测多个post参数是否完整并且不为空值
-    public static function sys_check_post($post_array)
+    /**
+     * 检测多个post参数是否完整并且不为空值
+     * @param $post_array
+     * @param int $type [0:json输出, 1:die输出]
+     */
+    public static function sys_check_post($post_array, $type = 1)
     {
         foreach ($post_array as $parm) {
             if (empty(self::getp($parm))) {
-                self::sys_out_fail($parm . " 参数不能为空", 100);
+                if($type){
+                    die($parm . " 参数不能为空");
+                }else{
+                    self::sys_out_fail($parm . " 参数不能为空", 100);
+                }
             }
         }
     }
-
+    /**
+     * 检测多个post参数是否完整并且不为空值
+     * @param $post_array
+     * @param int $type [0:json输出, 1:die输出]
+     */
+    public static function sys_check_get($post_array, $type = 1)
+    {
+        foreach ($post_array as $parm) {
+            if (empty(self::getg($parm))) {
+                if($type){
+                    die($parm . " 参数不能为空");
+                }else{
+                    self::sys_out_fail($parm . " 参数不能为空", 100);
+                }
+            }
+        }
+    }
     //形如：TK_150261_848
     public static function sys_check_token()
     {
@@ -965,6 +989,30 @@ class Help
         }
         $str = str_shuffle($str);
         return substr($str,0,$length);
+    }
+
+    /**
+     * 根据中心点经纬度，来计算以radius千米为距离半径，所画圆圈的正切正方形的四个点坐标
+     *
+     * param lng float 经度
+     * param lat float 纬度
+     * param radius float 该点所在圆的半径，默认值为10 千米
+     * return array 正方形的四个点的经纬度坐标
+     */
+    public static function squarePoint($lng, $lat,$radius = 10){
+
+        $dlng =  2 * asin(sin($radius /12742) / cos(deg2rad($lat)));//12742为地球直径
+        $dlng = rad2deg($dlng);
+
+        $dlat = $radius/6371; //6371为地球平均半径
+        $dlat = rad2deg($dlat);
+
+        return array(
+            'left-top'=>array('lat'=>$lat + $dlat,'lng'=>$lng-$dlng),
+            'right-top'=>array('lat'=>$lat + $dlat, 'lng'=>$lng + $dlng),
+            'left-bottom'=>array('lat'=>$lat - $dlat, 'lng'=>$lng - $dlng),
+            'right-bottom'=>array('lat'=>$lat - $dlat, 'lng'=>$lng + $dlng)
+        );
     }
 }
 

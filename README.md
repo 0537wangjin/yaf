@@ -3,12 +3,23 @@
 
 
 #### 数据库操作 [Medoo]
-详细使用方法参考 [http://medoo.lvtao.net/doc.php](http://medoo.lvtao.net/doc.php)
+详细使用方法参考 [https://medoo.in/doc](https://medoo.in/doc)
 
 ````
 $this->db = Yaf_Registry::get('db');
 $this->db->get('ju_user', array('id', 'username'), array('username' => $data['username']));
 ````
+事务使用方法
+
+````
+$this->db->action(function($db) use ($id){
+    // 取消默认
+    $db->update('sys_address', ['rec' => 0], ['client_id' => $this->uid]);
+    // 设置新默认
+    $db->update('sys_address', ['rec' => 1], ['id' => $id]);
+});
+````
+
 
 #### Redis操作
 ````
@@ -65,3 +76,7 @@ Help::getRoute();
 </code>
 - 页面跳转
 <code>$this->redirect(BASE_URL);</code>
+- 关闭自动加载模板
+<code>Yaf_Dispatcher::getInstance()->autoRender(FALSE);</code>
+- 调用指定模板
+<code>$this->getView()->display('user/advice.php');</code>
