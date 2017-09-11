@@ -50,6 +50,18 @@ public function upfileAction()
     die;
 }
 ````
+
+#### 生成缩略图
+````
+$file = PUBLIC_PATH . $p['titlepic'];
+$thumb_file = $file . '_thumb.jpg';
+// 生成缩略图
+$res = ImageManager::thumbnail($file, $thumb_file, 400);
+if ($res) {
+    $p['titlepicthumb'] = $p['titlepic'] . '_thumb.jpg';
+}
+````
+
 #### Session操作
 ````
 查看sessionn_id
@@ -65,7 +77,10 @@ Help::setSession('openid', Help::randStr(32));
 
 ````
 获取session
-Help::getSession('openid');
+方法1
+echo Help::getSession('openid');
+方法2
+echo unserialize(base64_decode(Yaf_Session::getInstance()->get('openid')));
 ````
 
 
@@ -74,9 +89,12 @@ Help::getSession('openid');
 <code>
 Help::getRoute();
 </code>
+
 - 页面跳转
 <code>$this->redirect(BASE_URL);</code>
+
 - 关闭自动加载模板
 <code>Yaf_Dispatcher::getInstance()->autoRender(FALSE);</code>
+
 - 调用指定模板
 <code>$this->getView()->display('user/advice.php');</code>
