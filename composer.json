@@ -1,0 +1,24 @@
+{
+    "name": "0537wangjin/yaf",
+    "description": "yaf",
+    "minimum-stability": "stable",
+    "license": "",
+    "authors": [
+        {
+            "name": "ccjin",
+            "email": "445899710@qq.com"
+        }
+    ],
+    "require": {
+        "twig/twig": "^2.4",
+        "php": ">=5.5.0",
+        "ext-curl": "*",
+        "guzzlehttp/guzzle": "~6.0"
+    },
+    "repositories": {
+        "packagist": {
+            "type": "composer",
+            "url": "https://packagist.phpcomposer.com"
+        }
+    }
+}

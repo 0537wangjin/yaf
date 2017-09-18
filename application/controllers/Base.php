@@ -8,11 +8,12 @@
  */
 class BaseController extends Yaf_Controller_Abstract
 {
+    protected $twig = null;
     /**
      * init 初始化函数
      */
     protected function init()
     {
-
+        $this->twig = Yaf_Registry::get('twig');
     }
 }
