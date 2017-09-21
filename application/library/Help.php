@@ -252,6 +252,15 @@ class Help
         }
         return $val;
     }
+    /**
+     * 获取session_id
+     * @return string
+     */
+    public static function getSessionID()
+    {
+        Yaf_Session::getInstance();// 初始化session
+        return session_id();
+    }
 
     /**
      * 获取cookie数据 getcookie($p);

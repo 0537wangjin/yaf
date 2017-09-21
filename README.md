@@ -12,12 +12,24 @@ $this->db->get('ju_user', array('id', 'username'), array('username' => $data['us
 事务使用方法
 
 ````
-$this->db->action(function($db) use ($id){
+// 开始事务
+$res = $this->db->action(function ($db) use ($id) {
     // 取消默认
-    $db->update('sys_address', ['rec' => 0], ['client_id' => $this->uid]);
+    $sql1 = $db->update('sys_address', ['rec' => 0], ['client_id' => $this->uid]);
+    if ($sql1->rowCount() <  1){
+        return false;
+    }
     // 设置新默认
-    $db->update('sys_address', ['rec' => 1], ['id' => $id]);
+    $sql2 = $db->update('sys_address', ['rec' => 1], ['id' => $id]);
+    if ($sql2->rowCount() <  1){
+        return false;
+    }
 });
+if ($res == true) {
+    die('操作成功!');
+} else {
+    die('系统出错!');
+}
 ````
 
 
