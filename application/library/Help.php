@@ -1037,6 +1037,36 @@ class Help
             'right-bottom' => array('lat' => $lat - $dlat, 'lng' => $lng + $dlng)
         );
     }
+
+    /**
+     * 处理base64编码的图片上传
+     * @param $base64
+     * @param $subdir
+     * @param string $pre
+     * @return bool|string
+     */
+    public static function upBase64($base64, $subdir, $pre = '')
+    {
+        $base64_image = str_replace(' ', '+', $base64);
+        //post的数据里面，加号会被替换为空格，需要重新替换回来，如果不是post的数据，则注释掉这一行
+        if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64_image, $result)) {
+            //匹配成功
+            if ($result[2] == 'jpeg') {
+                $image_name = $pre . uniqid() . '.jpg';
+                //纯粹是看jpeg不爽才替换的
+            } else {
+                $image_name = $pre . uniqid() . '.' . $result[2];
+            }
+            $image_file = $subdir . $image_name;
+            //服务器文件存储路径
+            if (file_put_contents($image_file, base64_decode(str_replace($result[1], '', $base64_image)))) {
+                return $image_name;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
 }
 
-?>
