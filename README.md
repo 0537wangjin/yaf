@@ -73,6 +73,26 @@ if ($res) {
     $p['titlepicthumb'] = $p['titlepic'] . '_thumb.jpg';
 }
 ````
+#### base64图片上传
+````
+public function evaluateSaveAction()
+{
+    $file = array();
+    $subdir1 = date('Ym');
+    $subdir2 = date('d');
+    $subdir = PUBLIC_PATH . 'upload' . '/' . $subdir1 . '/' . $subdir2 . '/';
+    if (!file_exists($subdir)) {
+        mkdir($subdir, 0777, true);
+    }
+    if($_POST['pic1']){
+        $base64 = $_POST['pic1'];
+        $img = Help::upBase64($base64, $subdir, $this->uid . '_reply_');
+        $file['pic1'] = '/upload/' . $subdir1 . '/' . $subdir2 . '/' . $img;
+    }
+    print_r($file);
+}
+````
+
 
 #### Session操作
 ````
