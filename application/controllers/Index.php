@@ -2,7 +2,7 @@
 
 /**
  * @name IndexController
- * @author root
+ * @author wangjin
  * @desc 默认控制器
  */
 
