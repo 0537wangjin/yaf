@@ -1,4 +1,27 @@
-## Yaf 使用说明
+<h1 align="center">Yaf基本封装</h1>
+<p align="center">QQ：445899710</p>
+
+## 安装说明
+#### 安装步骤
+````
+1. git clone https://github.com/0537wangjin/yaf.git ./
+2. composer install
+````
+
+<code>
+PHP7以下版本, composer.json中的twig引用请修改为 "twig/twig": "^1.35.0"
+</code>
+
+#### nginx配置
+````
+# 增加伪静态规则
+if (!-e $request_filename) {
+    rewrite ^/(.*\.(js|ico|gif|jpg|png|css|bmp|html|xls)$) /$1 last;
+    rewrite ^/(.*) /index.php?$1 last;
+}
+````
+
+## 使用说明
 
 
 
