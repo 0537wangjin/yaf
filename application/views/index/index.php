@@ -61,9 +61,8 @@
     </style>
 </head>
 <body>
-<form action="<?php echo BASE_URL;?>User/userSave" method="post" enctype="multipart/form-data">
-    <input type="file" name="upfile" />
-    <input type="submit">
-</form>
+<div class="content">
+    <p class="title">{{pagetitle}}</p>
+</div>
 </body>
 </html>

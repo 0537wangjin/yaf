@@ -21,11 +21,9 @@ class IndexController extends BaseController
      */
     public function indexAction()
     {
-        $assign = array();
-        $assign['pagetitle'] = '斗图';
-        // 获取恶搞图片列表
-        $eglist = $this->db->query('SELECT `id`, `title`, `titlepic`, `oncreate` FROM `eg_list` ORDER BY RAND() LIMIT 12')->fetchAll();
-        $assign['eglist'] = $eglist;
+        $assign = array(
+            'pagetitle' => 'Yaf'
+        );
         echo $this->twig->render('index/index.php', $assign);
     }
 }
