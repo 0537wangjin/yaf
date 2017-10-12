@@ -873,15 +873,15 @@ class Help
      */
     public static function validateSign()
     {
-        //$datetime = self::getp('timestamp');
+        $datetime = intval(self::getp('timestamp'));
         //$datetime = time();
         // 获取加密KEY
         $key = Yaf_Registry::get('config')['application']['app']['appkey'];
         $sign = self::getp('sign');
-        /*if ($_SERVER['REQUEST_TIME'] - $datetime > 60) {
-            self::sys_out_fail('会话超时', 500);
-        }*/
-        $path = $key . '|' . self::getRoute($_SERVER["REQUEST_URI"]);
+        if ($_SERVER['REQUEST_TIME'] - $datetime > 60) {
+            self::sys_out_fail('会话超时', 100);
+        }
+        $path = $key . '|' . self::getRoute($_SERVER["REQUEST_URI"]) . '|' . $datetime;
         $signValue = md5($path);
         if ($signValue != $sign) {
             self::sys_out_fail('sign: ' . $signValue . ' old: ' . $path, 101);
