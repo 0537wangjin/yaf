@@ -884,7 +884,7 @@ class Help
         $path = $key . '|' . self::getRoute($_SERVER["REQUEST_URI"]) . '|' . $datetime;
         $signValue = md5($path);
         if ($signValue != $sign) {
-            self::sys_out_fail('sign: ' . $signValue . ' old: ' . $path, 101);
+            self::sys_out_fail('签名错误', 101);
         }
     }
 
