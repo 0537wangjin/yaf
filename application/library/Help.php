@@ -991,8 +991,11 @@ class Help
         if (!self::getp('token')) {
             self::sys_out_fail('token 参数不能为空', 100);
         }
-        if (self::getSession('token') != self::getp('token')) {
-            self::sys_out_fail('登录令牌失效，请重新登录！', 102);
+        // 调试模式, 不验证token
+        if (Yaf_Registry::get('config')->application->debug == false ) {
+            if (self::getSession('token') != self::getp('token')) {
+                self::sys_out_fail('登录令牌失效，请重新登录！', 102);
+            }
         }
     }
 
