@@ -138,6 +138,23 @@ echo Help::getSession('openid');
 方法2
 echo unserialize(base64_decode(Yaf_Session::getInstance()->get('openid')));
 ````
+#### 阿里大鱼短信使用方法
+````
+$verify_code = rand(1000, 9999);
+$outId = date('YmdHis');
+$sms = new \Aliyun\Dysms(AccessKeyId, AccessKeySecret);
+$signName = '支付宝';
+$templateCode = 'SMS_90880000';
+$username = '15566669999';
+$templateParam = array('code' => $verify_code);
+$response = $sms->send_sms($signName, $templateCode, $username, $templateParam, $outId);
+if (isset($response['Code']) && 'OK' == $response['Code']) {
+    //发送成功
+    $status = '1';
+} else {
+    //发送失败
+}
+````
 
 
 #### 小技巧
