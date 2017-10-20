@@ -40,6 +40,8 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
             'server' => $this->arrConfig->application->db->hostname,
             'username' => $this->arrConfig->application->db->username,
             'password' => $this->arrConfig->application->db->password,
+            'prefix' => $this->arrConfig->application->db->prefix,
+            'logging' => $this->arrConfig->application->db->log,
             'charset' => 'utf8'
         ]));
     }
