@@ -940,13 +940,14 @@ class Help
         self::print_json($result_array);
     }
 
-    // 封装一下简单（默认）输出(result一般是数据库操作或函数返回的布尔值)
+    // 输出(result一般是数据库操作或函数返回的布尔值)
     public static function sys_out_result($result)
     {
-        if ($result !== false)
+        if (!empty($result)) {
             self::sys_out_success();
-        else
+        } else {
             self::sys_out_fail();
+        }
     }
 
     /**
