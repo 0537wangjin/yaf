@@ -844,7 +844,7 @@ class Help
      */
     public static function getRoute($url = '')
     {
-        $url = $url ? $url : $_SERVER["REQUEST_URI"];
+        $url = $url ? $url : strtolower($_SERVER["REQUEST_URI"]);
         // 删除开始的斜杠
         $url = ltrim($url, '/');
         // 删除?后的内容
