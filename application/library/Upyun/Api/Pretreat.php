@@ -1,7 +1,6 @@
 <?php
 namespace Upyun\Api;
 
-use GuzzleHttp\Psr7;
 use GuzzleHttp\Client;
 use Upyun\Config;
 use Upyun\Signature;
@@ -23,7 +22,7 @@ class Pretreat
         $this->config = $config;
     }
 
-    public function process($source, $tasks)
+    public function process($tasks, $optionalParams = array())
     {
         $encodedTasks = Util::base64Json($tasks);
 
@@ -34,10 +33,10 @@ class Pretreat
         $params = array(
             'service' => $this->config->serviceName,
             'notify_url' => $this->config->processNotifyUrl,
-            'source' => $source,
             'tasks' => $encodedTasks,
-            'accept' => 'json'
         );
+
+        $params = array_merge($params, $optionalParams);
 
         $path = '/pretreatment/';
         $method = 'POST';
