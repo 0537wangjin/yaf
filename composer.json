@@ -1,7 +1,7 @@
 {
     "name": "0537wangjin/yaf",
     "description": "yaf",
-    "minimum-stability": "stable",
+    "minimum-stability": "beta",
     "license": "",
     "authors": [
         {
@@ -13,7 +13,8 @@
         "twig/twig": "^2.4",
         "php": ">=5.5.0",
         "ext-curl": "*",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "~6.0",
+        "firebase/php-jwt": "^5.0"
     },
     "repositories": {
         "packagist": {

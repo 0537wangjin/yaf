@@ -861,11 +861,17 @@ class Help
      * @param $nickname
      * @return string
      */
-    public static function sys_get_token($client_id)
+    public static function sys_get_token($username)
     {
-        $myToken = "TK_" . rand(1000, 9999) . "_" . $client_id;//命名规则：TK_4位随机数_用户主键ID
-        self::setSession('token', $myToken);
-        return $myToken;
+        $key = Yaf_Registry::get('config')['application']['app']['appkey'];
+        $time = strtotime(date('Y-m-d'));
+        $token = array(
+            "username" => $username,
+            "iat" => $time,
+            "nbf" => $time
+        );
+        $jwt = \Firebase\JWT\JWT::encode($token, $key);
+        return $jwt;
     }
 
     /**
@@ -989,15 +995,9 @@ class Help
     //形如：TK_150261_848
     public static function sys_check_token()
     {
-        if (!self::getp('token')) {
-            self::sys_out_fail('token 参数不能为空', 100);
-        }
-        // 调试模式, 不验证token
-        if (Yaf_Registry::get('config')->application->debug == false ) {
-            if (self::getSession('token') != self::getp('token')) {
-                self::sys_out_fail('登录令牌失效，请重新登录！', 102);
-            }
-        }
+        $key = Yaf_Registry::get('config')['application']['app']['appkey'];
+        $decoded = \Firebase\JWT\JWT::decode(self::getp('token'), $key, array('HS256'));
+        return $decoded;
     }
 
     /**
