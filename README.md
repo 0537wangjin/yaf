@@ -155,7 +155,44 @@ if (isset($response['Code']) && 'OK' == $response['Code']) {
     //发送失败
 }
 ````
-
+#### Excel导入
+```
+/**
+     * 批量导入保单
+     */
+    public function userinfoImportAction()
+    {
+        // 上传文件
+        $file = Help::upload('file', 'upload', 'url', 'xlsx');
+        if (empty($file)){
+            $this->success(1, '文件上传失败!', $_SERVER['HTTP_REFERER']);
+        }
+        $file = PUBLIC_PATH . $file;
+        // 判断读取文件格式
+        $reader = \PHPExcel_IOFactory::createReader('Excel2007');
+        if (!$reader->canRead($file)) {
+            $reader = \PHPExcel_IOFactory::createReader('Excel5');
+        }
+        $PHPExcel = $reader->load($file);
+        $sheet = $PHPExcel->getActiveSheet();
+        $highestRow = $sheet->getHighestRow(); // 取得总行数
+        // $highestColumn = $sheet->getHighestColumn(); // 取得总列数
+        for ($i = 2; $i <= $highestRow; $i++) {
+            // 检查保单号是否存在
+            $cardno = $sheet->getCell('A' . $i)->getValue();
+            $arg1 = array(
+                'starttime' => $sheet->getCell('B' . $i)->getValue(),
+                'endtime' => $sheet->getCell('C' . $i)->getValue(),
+                'baodanhao' => $sheet->getCell('D' . $i)->getValue(),
+                'baoan' => $sheet->getCell('E' . $i)->getValue(),
+            );
+            if (!empty($cardno)) {
+                $res = $this->db->update('userinfo', $arg1, ['cardno' => $cardno]);
+            }
+        }
+        $this->success(1, '上传成功!', $_SERVER['HTTP_REFERER']);
+    }
+```
 
 #### 小技巧
 - 获取当前控制器
