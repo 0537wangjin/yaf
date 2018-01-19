@@ -193,6 +193,31 @@ if (isset($response['Code']) && 'OK' == $response['Code']) {
         $this->success(1, '上传成功!', $_SERVER['HTTP_REFERER']);
     }
 ```
+#### 发送邮件
+```
+$config = $this->db->get('config', ['site_title_small', 'smtp_server', 'smtp_user', 'smtp_pass'], ['id' => 1]);
+$mailer = new \PHPMailer();
+$mailer->CharSet = "UTF-8";
+$mailer->ContentType = 'text/html';
+$mailer->IsSMTP();
+//0是不输出调试信息
+//2是输出详细的调试信息
+$mailer->SMTPDebug  = 0;
+//需要验证
+$mailer->SMTPAuth = true;
+$mailer->SMTPSecure = 'ssl';
+$mailer->Host = $config['smtp_server'];
+$mailer->Port = 465;
+$mailer->Username = $config['smtp_user'];
+$mailer->Password = $config['smtp_pass'];
+$mailer->SetFrom($config['smtp_user'],$config['site_title_small']);
+$mailer->AddAddress('445899710@qq.com',"尊敬的客户");
+$mailer->Subject = '商户注册!!';
+$mailer->MsgHTML('注册成功!!!!!!!');
+$res = $mailer->send();
+var_dump($res);
+```
+
 
 #### 小技巧
 - 获取当前控制器
