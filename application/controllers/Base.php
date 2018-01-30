@@ -15,5 +15,8 @@ class BaseController extends Yaf_Controller_Abstract
     protected function init()
     {
         $this->twig = Yaf_Registry::get('twig');
+        // SeasLog 日志设置
+        // SeasLog::setBasePath('/data/log');
+        // SeasLog::setLogger('kaoqin');
     }
 }

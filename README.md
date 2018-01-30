@@ -2,16 +2,28 @@
 <h3 align="center">https://github.com/0537wangjin/yaf</h3>
 <p align="center">QQ：445899710</p>
 
+#### 包含以下内容的使用方法
+
+- Twig
+- SeasLog
+- Medoo
+- 阿里云短信
+- PHPMailer
+- 融云API
+- Upyun
+- 迅搜(xunsearch)
+- Swoole
+
 ## 安装说明
+
+
+
+
 #### 安装步骤
 ````
 1. git clone https://github.com/0537wangjin/yaf.git ./
 2. composer install
 ````
-
-<code>
-PHP7以下版本, composer.json中的twig引用请修改为 "twig/twig": "^1.35.0"
-</code>
 
 #### nginx配置
 ````
@@ -22,8 +34,26 @@ if (!-e $request_filename) {
 }
 ````
 
+
+
 ## 使用说明
 
+#### SeasLog日志
+详细使用方法参考 https://github.com/Neeke/SeasLog
+
+如需启用, 请取消注释, 引入位置在
+
+/application/controller/Base.php
+
+````
+protected function init()
+{
+    $this->twig = Yaf_Registry::get('twig');
+    // SeasLog 日志设置
+    // SeasLog::setBasePath('/data/log');
+    // SeasLog::setLogger('kaoqin');
+}
+````
 
 
 #### 数据库操作 [Medoo]
@@ -218,6 +248,43 @@ $res = $mailer->send();
 var_dump($res);
 ```
 
+#### 融云推送
+
+````
+$rc = new \Rongcloud($this->ry_appkey, $this->ry_appsec);
+$message = '您有新的审批提醒' . PHP_EOL;
+$uid = $row['from_uid'];
+$rc_content = array('name' => 'update_correct_list', 'data' => '');
+$res = $rc->messageSystemPublish($uid, $uid, 'RC:CmdNtf', $rc_content);
+$json = json_decode($res, true);
+if ($json['code'] == '200') {}
+````
+
+
+#### Upyun
+
+````
+/**
+ * 上传到UPYUN
+ * @param $filename
+ * @param $updir
+ * @param $urlname
+ * @return string
+ */
+private function uploadToUpyun($filename, $updir, $urlname)
+{
+    $config = new \Upyun\Config(Yaf_Registry::get('config')->application->upyun->bucketname, Yaf_Registry::get('config')->application->upyun->operatorname, Yaf_Registry::get('config')->application->upyun->operatorpassword);
+    $upyun = new \Upyun\Upyun($config);
+    // 读文件
+    $upyunfile = fopen($filename, 'r');
+    //文件上传
+    $res = $upyun->write('/tools/' . $updir . '/' . $urlname, $upyunfile);
+    //删除本地文件
+    @unlink($filename);
+    $imgurl = 'http://cdn.huyahaha.com/tools/' . $updir . '/' . $urlname;
+    return $imgurl;
+}
+````
 
 #### 小技巧
 - 获取当前控制器
