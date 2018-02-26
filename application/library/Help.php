@@ -897,63 +897,19 @@ class Help
     /**
      * app接口返回json
      */
-    public static function print_json($parm_array = array())
+    public static function print_json($errcode, $data, $id = 0)
     {
-        //print_r($parm_array);
-        //$parm_array['route'] = self::getRoute();
         $json = array();
-        $json['code'] = intval($parm_array['error_code']);
-        if($parm_array['success']==true){
-            $json['message'] = 'success';
-        }else{
-            $json['message'] = $parm_array['msg'];
-        }
-        $json['data'] = $parm_array['infor']?$parm_array['infor']:NULL;
-        echo json_encode($json);
-        die;
-    }
-
-    // 向客户端输出错误信息(500表示是服务器端异常错误，需要重试)
-    public static function sys_out_fail($parmMsg = NULL, $errorNumber = 500)
-    {
-        unset($result_array);
-        $result_array['success'] = false;//注意：为了和extjs兼容，此处必须不带引号
-
-        if (empty($parmMsg)) {
-            $parmMsg = "操作失败！";
+        $json['errcode'] = intval($errcode);
+        if (is_array($data)) {
+            $json['data'] = $data;
         } else {
-            $parmMsg = $parmMsg;
+            $json['errmsg'] = $data;
         }
-
-        $result_array['msg'] = $parmMsg;
-        $result_array['error_code'] = $errorNumber;
-
-        self::print_json($result_array);
-    }
-
-    // 向客户端输出成功信息
-    public static function sys_out_success($parmMsg = NULL, $infor_array = NULL)
-    {
-        unset($result_array);
-        $result_array['success'] = true;//注意：为了和extjs兼容，此处必须不带引号
-
-        if (empty($parmMsg)) {
-            $parmMsg = "操作成功！";
+        if ($id > 0){
+            $json['id'] = $id;
         }
-
-        $result_array['msg'] = $parmMsg;
-        $result_array['infor'] = $infor_array;//固定输出infor字段，以适配各种复杂情况
-        self::print_json($result_array);
-    }
-
-    // 输出(result一般是数据库操作或函数返回的布尔值)
-    public static function sys_out_result($result)
-    {
-        if (!empty($result)) {
-            self::sys_out_success();
-        } else {
-            self::sys_out_fail();
-        }
+        die(json_encode($json));
     }
 
     /**
@@ -992,7 +948,7 @@ class Help
         }
     }
 
-    //形如：TK_150261_848
+    // jwt
     public static function sys_check_token()
     {
         $key = Yaf_Registry::get('config')['application']['app']['appkey'];
