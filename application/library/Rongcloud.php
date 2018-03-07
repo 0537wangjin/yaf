@@ -3,14 +3,15 @@
  * 融云 Rongcloud 接口
  * Class Rongcloud
  * @author  qfsoft@163.com
- * @version	2016-6-14 09:42:38
+ * @version	2018-1-26 09:48:07
  */
-class Rongcloud {
+class Rongcloud
+{
     private $appKey;                //appKey
     private $appSecret;             //secret
     const   SERVERAPIURL = 'http://api.cn.ronghub.com';    //请求服务地址
     private $format;                //数据格式 json/xml
-    public	$is_record = false;		//是否记录日志
+    public	$is_record = true;		//是否记录日志
     public	$destination = '';		//日志存放目标
     
     /**
@@ -24,7 +25,7 @@ class Rongcloud {
         $this->appSecret = $appSecret;
         $this->format = $format;
         if ($this->is_record) {
-        	$this->destination = str_replace("\\", "/", dirname(__FILE__)).'/Rongcloud_'.date('Y_m_d').'.log';		// 默认当前目录
+            $this->destination = LOG_PATH .'rongcloud_'. date('y_m_d').'.log';
         }
     }
     
@@ -38,17 +39,17 @@ class Rongcloud {
     public function getToken($userId, $name, $portraitUri) {
     	try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($name))
-                throw new Exception('用户名称 不能为空');
+                throw new \Exception('用户名称 不能为空');
             if(empty($portraitUri))
-                throw new Exception('用户头像 URI 不能为空');
+                throw new \Exception('用户头像 URI 不能为空');
 
             $ret = $this->curl('/user/getToken',array('userId'=>$userId,'name'=>$name,'portraitUri'=>$portraitUri));
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -69,17 +70,17 @@ class Rongcloud {
     public function userRefresh($userId, $name='', $portraitUri='') {
         try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($name))
-                throw new Exception('用户名称不能为空');
+                throw new \Exception('用户名称不能为空');
             if(empty($portraitUri))
-                throw new Exception('用户头像 URI 不能为空');
+                throw new \Exception('用户头像 URI 不能为空');
             $ret = $this->curl('/user/refresh',
                 array('userId' => $userId, 'name' => $name, 'portraitUri' => $portraitUri));
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -97,12 +98,12 @@ class Rongcloud {
     public function userCheckOnline($userId) {
         try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             $ret = $this->curl('/user/checkOnline', array('userId' => $userId));
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -121,14 +122,14 @@ class Rongcloud {
     public function userBlock($userId, $minute) {
         try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($minute))
-                throw new Exception('封禁时长不能为空');
+                throw new \Exception('封禁时长不能为空');
             $ret = $this->curl('/user/block', array('userId' => $userId, 'minute' => $minute));
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -146,12 +147,12 @@ class Rongcloud {
     public function userUnBlock($userId) {
         try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             $ret = $this->curl('/user/unblock', array('userId' => $userId));
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -169,9 +170,9 @@ class Rongcloud {
         try{
             $ret = $this->curl('/user/block/query','');
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -190,9 +191,9 @@ class Rongcloud {
     public function userBlacklistAdd($userId, $blackUserId) {
         try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($blackUserId))
-                throw new Exception('被加黑的用户 Id 不能为空');
+                throw new \Exception('被加黑的用户 Id 不能为空');
 
             $params = array(
                 'userId' => $userId,
@@ -201,9 +202,9 @@ class Rongcloud {
 
             $ret = $this->curl('/user/blacklist/add', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -222,9 +223,9 @@ class Rongcloud {
     public function userBlacklistRemove($userId, $blackUserId) {
         try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($blackUserId))
-                throw new Exception('被移除的用户Id 不能为空');
+                throw new \Exception('被移除的用户Id 不能为空');
 
             $params = array(
                 'userId' => $userId,
@@ -233,9 +234,9 @@ class Rongcloud {
 
             $ret = $this->curl('/user/blacklist/remove', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -253,12 +254,12 @@ class Rongcloud {
     public function userBlacklistQuery($userId) {
         try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             $ret = $this->curl('/user/blacklist/query', array('userId' => $userId));
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -284,15 +285,15 @@ class Rongcloud {
     public function messagePrivatePublish($fromUserId, $toUserId, $objectName, $content, $pushContent='', $pushData='', $count=0, $verifyBlacklist=0) {
         try{
             if(empty($fromUserId))
-                throw new Exception('发送人用户 Id 不能为空');
+                throw new \Exception('发送人用户 Id 不能为空');
             if(empty($toUserId))
-                throw new Exception('接收用户 Id 不能为空');
+                throw new \Exception('接收用户 Id 不能为空');
             if(empty($objectName))
-                throw new Exception('消息类型 不能为空');
+                throw new \Exception('消息类型 不能为空');
             if(empty($content))
-                throw new Exception('发送消息内容 不能为空');
+                throw new \Exception('发送消息内容 不能为空');
             if(!is_array($content))
-                throw new Exception('发送消息内容 必须数组格式');
+                throw new \Exception('发送消息内容 必须数组格式');
             
             if (is_array($toUserId)) {
             	$toUserId = array_values($toUserId);
@@ -311,9 +312,9 @@ class Rongcloud {
 
             $ret = $this->curl('/message/private/publish', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -340,27 +341,27 @@ class Rongcloud {
     public function messagePrivatePublishTemplate($fromUserId, $toUserId, $objectName, $values, $content, $pushContent, $pushData, $verifyBlacklist=0) {
         try{
             if(empty($fromUserId))
-                throw new Exception('发送人用户 Id 不能为空');
+                throw new \Exception('发送人用户 Id 不能为空');
             if(empty($toUserId))
-                throw new Exception('接收用户 Id 不能为空');
+                throw new \Exception('接收用户 Id 不能为空');
             if(empty($objectName))
-                throw new Exception('消息类型 不能为空');
+                throw new \Exception('消息类型 不能为空');
             if(empty($values))
-                throw new Exception('标识位内容 不能为空');
+                throw new \Exception('标识位内容 不能为空');
             if(!is_array($values))
-                throw new Exception('标识位内容 必须数组格式');
+                throw new \Exception('标识位内容 必须数组格式');
             if(empty($content))
-                throw new Exception('发送消息内容 不能为空');
+                throw new \Exception('发送消息内容 不能为空');
             if(!is_array($content))
-                throw new Exception('发送消息内容 必须数组格式');
+                throw new \Exception('发送消息内容 必须数组格式');
             if(empty($pushContent))
-                throw new Exception('Push内容 不能为空');
+                throw new \Exception('Push内容 不能为空');
             if(!is_array($pushContent))
-                throw new Exception('Push内容 必须数组格式');
+                throw new \Exception('Push内容 必须数组格式');
             if(empty($pushData))
-                throw new Exception('Push数据 不能为空');
+                throw new \Exception('Push数据 不能为空');
             if(!is_array($pushData))
-                throw new Exception('Push数据 必须数组格式');
+                throw new \Exception('Push数据 必须数组格式');
 
         	if (is_array($toUserId)) {
             	$toUserId = array_values($toUserId);
@@ -379,9 +380,9 @@ class Rongcloud {
 
             $ret = $this->curl('/message/private/publish_template', $params, 'json');
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -400,20 +401,21 @@ class Rongcloud {
      * @param array $content			发送消息内容，参考融云消息类型表.示例说明；如果 objectName 为自定义消息类型，该参数可自定义格式
      * @param string $pushContent		(可选)定义显示的 Push 内容，如果 objectName 为融云内置消息类型时，则发送后用户一定会收到 Push 信息。 如果为自定义消息，则 pushContent 为自定义消息显示的 Push 内容，如果不传则用户不会收到 Push 通知
      * @param string $pushData			(可选)针对 iOS 平台为 Push 通知时附加到 payload 中，Android 客户端收到推送消息时对应字段名为 pushData
+     * @param integer $contentAvailable (可选)针对 iOS 平台，对 SDK 处于后台暂停状态时为静默推送，是 iOS7 之后推出的一种推送方式。 允许应用在收到通知后在后台运行一段代码，且能够马上执行，查看详细。1 表示为开启，0 表示为关闭，默认为 0
      * @return json|xml
      */
-    public function messageSystemPublish($fromUserId, $toUserId, $objectName, $content, $pushContent='', $pushData='') {
+    public function messageSystemPublish($fromUserId, $toUserId, $objectName, $content, $pushContent='', $pushData='', $contentAvailable=0) {
     	try{
             if(empty($fromUserId))
-                throw new Exception('发送人用户 Id 不能为空');
+                throw new \Exception('发送人用户 Id 不能为空');
             if(empty($toUserId))
-                throw new Exception('接收用户 Id 不能为空');
+                throw new \Exception('接收用户 Id 不能为空');
             if(empty($objectName))
-                throw new Exception('消息类型 不能为空');
+                throw new \Exception('消息类型 不能为空');
             if(empty($content))
-                throw new Exception('发送消息内容 不能为空');
+                throw new \Exception('发送消息内容 不能为空');
             if(!is_array($content))
-                throw new Exception('发送消息内容 必须数组格式');
+                throw new \Exception('发送消息内容 必须数组格式');
             
             if (is_array($toUserId)) {
             	$toUserId = array_values($toUserId);
@@ -426,13 +428,14 @@ class Rongcloud {
                 'content' => $content,
                 'pushContent' => $pushContent,
                 'pushData' => $pushData,
+                'contentAvailable' => $contentAvailable,
             );
 
             $ret = $this->curl('/message/system/publish', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -459,19 +462,19 @@ class Rongcloud {
     public function messageSystemPublishTemplate($fromUserId, $toUserId, $objectName, $values, $content, $pushContent='', $pushData='') {
         try{
             if(empty($fromUserId))
-                throw new Exception('发送人用户 Id 不能为空');
+                throw new \Exception('发送人用户 Id 不能为空');
             if(empty($toUserId))
-                throw new Exception('接收用户 Id 不能为空');
+                throw new \Exception('接收用户 Id 不能为空');
             if(empty($objectName))
-                throw new Exception('消息类型 不能为空');
+                throw new \Exception('消息类型 不能为空');
             if(empty($values))
-                throw new Exception('标识位内容 不能为空');
+                throw new \Exception('标识位内容 不能为空');
             if(!is_array($values))
-                throw new Exception('标识位内容 必须数组格式');
+                throw new \Exception('标识位内容 必须数组格式');
             if(empty($content))
-                throw new Exception('发送消息内容 不能为空');
+                throw new \Exception('发送消息内容 不能为空');
             if(!is_array($content))
-                throw new Exception('发送消息内容 必须数组格式');
+                throw new \Exception('发送消息内容 必须数组格式');
             
             if (is_array($toUserId)) {
             	$toUserId = array_values($toUserId);
@@ -489,9 +492,9 @@ class Rongcloud {
 
             $ret = $this->curl('/message/system/publish_template', $params, 'json');
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -515,15 +518,15 @@ class Rongcloud {
     public function messageGroupPublish($fromUserId, $toGroupId, $objectName, $content, $pushContent='', $pushData='') {
     	try{
             if(empty($fromUserId))
-                throw new Exception('发送人用户 Id 不能为空');
+                throw new \Exception('发送人用户 Id 不能为空');
             if(empty($toGroupId))
-                throw new Exception('接收群Id 不能为空');
+                throw new \Exception('接收群Id 不能为空');
             if(empty($objectName))
-                throw new Exception('消息类型 不能为空');
+                throw new \Exception('消息类型 不能为空');
             if(empty($content))
-                throw new Exception('发送消息内容 不能为空');
+                throw new \Exception('发送消息内容 不能为空');
             if(!is_array($content))
-                throw new Exception('发送消息内容 必须数组格式');
+                throw new \Exception('发送消息内容 必须数组格式');
                 
             if (is_array($toGroupId)) {
             	$toGroupId = array_values($toGroupId);
@@ -540,9 +543,9 @@ class Rongcloud {
 
             $ret = $this->curl('/message/group/publish', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -565,15 +568,15 @@ class Rongcloud {
     public function messageDiscussionPublish($fromUserId, $toDiscussionId, $objectName, $content, $pushContent='', $pushData='') {
     	try{
             if(empty($fromUserId))
-                throw new Exception('发送人用户 Id 不能为空');
+                throw new \Exception('发送人用户 Id 不能为空');
             if(empty($toDiscussionId))
-                throw new Exception('接收讨论组 Id 不能为空');
+                throw new \Exception('接收讨论组 Id 不能为空');
             if(empty($objectName))
-                throw new Exception('消息类型 不能为空');
+                throw new \Exception('消息类型 不能为空');
             if(empty($content))
-                throw new Exception('发送消息内容 不能为空');
+                throw new \Exception('发送消息内容 不能为空');
             if(!is_array($content))
-                throw new Exception('发送消息内容 必须数组格式');
+                throw new \Exception('发送消息内容 必须数组格式');
 
             $content = json_encode($content);
             $params = array(
@@ -587,9 +590,9 @@ class Rongcloud {
 
             $ret = $this->curl('/message/discussion/publish', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -611,15 +614,15 @@ class Rongcloud {
     public function messageChatroomPublish($fromUserId, $toChatroomId, $objectName, $content) {
         try{
             if(empty($fromUserId))
-                throw new Exception('发送人用户 Id 不能为空');
+                throw new \Exception('发送人用户 Id 不能为空');
             if(empty($toChatroomId))
-                throw new Exception('接收聊天室Id 不能为空');
+                throw new \Exception('接收聊天室Id 不能为空');
             if(empty($objectName))
-                throw new Exception('消息类型 不能为空');
+                throw new \Exception('消息类型 不能为空');
             if(empty($content))
-                throw new Exception('发送消息内容 不能为空');
+                throw new \Exception('发送消息内容 不能为空');
             if(!is_array($content))
-                throw new Exception('发送消息内容 必须数组格式');
+                throw new \Exception('发送消息内容 必须数组格式');
 
             if (is_array($toChatroomId)) {
             	$toChatroomId = array_values($toChatroomId);
@@ -634,9 +637,9 @@ class Rongcloud {
 
             $ret = $this->curl('/message/chatroom/publish', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -660,13 +663,13 @@ class Rongcloud {
     public function messageBroadcast($fromUserId, $objectName, $content, $pushContent='', $pushData='', $os='') {
     	try{
             if(empty($fromUserId))
-                throw new Exception('发送人用户 Id 不能为空');
+                throw new \Exception('发送人用户 Id 不能为空');
             if(empty($objectName))
-                throw new Exception('消息类型 不能为空');
+                throw new \Exception('消息类型 不能为空');
             if(empty($content))
-                throw new Exception('发送消息内容 不能为空');
+                throw new \Exception('发送消息内容 不能为空');
             if(!is_array($content))
-                throw new Exception('发送消息内容 必须数组格式');
+                throw new \Exception('发送消息内容 必须数组格式');
 
             $content = json_encode($content);
             $params = array(
@@ -680,9 +683,9 @@ class Rongcloud {
 
             $ret = $this->curl('/message/broadcast', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -700,7 +703,7 @@ class Rongcloud {
     public function wordfilterAdd($word) {
     	try{
             if(empty($word))
-                throw new Exception('敏感词 不能为空');
+                throw new \Exception('敏感词 不能为空');
 
             $params = array(
                 'word' => $word
@@ -708,9 +711,9 @@ class Rongcloud {
 
             $ret = $this->curl('/wordfilter/add', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -728,7 +731,7 @@ class Rongcloud {
     public function wordfilterDelete($word) {
     	try{
             if(empty($word))
-                throw new Exception('敏感词 不能为空');
+                throw new \Exception('敏感词 不能为空');
 
             $params = array(
                 'word' => $word
@@ -736,9 +739,9 @@ class Rongcloud {
 
             $ret = $this->curl('/wordfilter/delete', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -756,9 +759,9 @@ class Rongcloud {
         try{
             $ret = $this->curl('/wordfilter/list', array());
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -777,7 +780,7 @@ class Rongcloud {
     public function messageHistory($date) {
     	try {
             if(empty($date))
-                throw new Exception('时间 不能为空');
+                throw new \Exception('时间 不能为空');
 
             $params = array(
                 'date' => $date
@@ -785,9 +788,9 @@ class Rongcloud {
 
             $ret = $this->curl('/message/history', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-    	}catch (Exception $e) {
+    	}catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -807,7 +810,7 @@ class Rongcloud {
     public function messageHistoryDelete($date) {
     	try {
             if(empty($date))
-                throw new Exception('时间 不能为空');
+                throw new \Exception('时间 不能为空');
 
             $params = array(
                 'date' => $date
@@ -815,9 +818,9 @@ class Rongcloud {
 
             $ret = $this->curl('/message/history/delete', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-    	}catch (Exception $e) {
+    	}catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -839,9 +842,9 @@ class Rongcloud {
     public function groupSync($userId, $data=array()) {
     	try{
             if(empty($userId))
-                throw new Exception('被同步群信息的用户 Id 不能为空');
+                throw new \Exception('被同步群信息的用户 Id 不能为空');
             if(empty($data))
-                throw new Exception('该用户的群信息 不能为空');
+                throw new \Exception('该用户的群信息 不能为空');
 
             $params = array(
                 'userId' => $userId
@@ -852,9 +855,9 @@ class Rongcloud {
 
             $ret = $this->curl('/group/sync', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -875,11 +878,11 @@ class Rongcloud {
     public function groupCreate($userId, $groupId, $groupName) {
     	try{
             if(empty($userId))
-                throw new Exception('要加入群的用户 Id 不能为空');
+                throw new \Exception('要加入群的用户 Id 不能为空');
             if(empty($groupId))
-                throw new Exception('创建群组 Id 不能为空');
+                throw new \Exception('创建群组 Id 不能为空');
             if(empty($groupName))
-                throw new Exception('群组 Id 对应的名称 不能为空');
+                throw new \Exception('群组 Id 对应的名称 不能为空');
     	
             if (is_array($userId)) {
             	$userId = array_values($userId);
@@ -892,9 +895,9 @@ class Rongcloud {
 
             $ret = $this->curl('/group/create', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -915,11 +918,11 @@ class Rongcloud {
     public function groupJoin($userId, $groupId, $groupName) {
     	try{
             if(empty($userId))
-                throw new Exception('要加入群的用户 Id 不能为空');
+                throw new \Exception('要加入群的用户 Id 不能为空');
             if(empty($groupId))
-                throw new Exception('要加入的群 Id 不能为空');
+                throw new \Exception('要加入的群 Id 不能为空');
             if(empty($groupName))
-                throw new Exception('要加入的群 Id 对应的名称 不能为空');
+                throw new \Exception('要加入的群 Id 对应的名称 不能为空');
 
             if (is_array($userId)) {
             	$userId = array_values($userId);
@@ -932,9 +935,9 @@ class Rongcloud {
 
             $ret = $this->curl('/group/join', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -954,9 +957,9 @@ class Rongcloud {
     public function groupQuit($userId, $groupId) {
     	try{
             if(empty($userId))
-                throw new Exception('要退出群的用户 Id 不能为空');
+                throw new \Exception('要退出群的用户 Id 不能为空');
             if(empty($groupId))
-                throw new Exception('要退出的群 Id 不能为空');
+                throw new \Exception('要退出的群 Id 不能为空');
 
             if (is_array($userId)) {
             	$userId = array_values($userId);
@@ -968,9 +971,9 @@ class Rongcloud {
 
             $ret = $this->curl('/group/quit', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -990,9 +993,9 @@ class Rongcloud {
     public function groupDismiss($userId, $groupId) {
     	try{
             if(empty($userId))
-                throw new Exception('操作解散群的用户 Id 不能为空');
+                throw new \Exception('操作解散群的用户 Id 不能为空');
             if(empty($groupId))
-                throw new Exception('要解散的群 Id 不能为空');
+                throw new \Exception('要解散的群 Id 不能为空');
 
             $params = array(
                 'userId' => $userId,
@@ -1001,9 +1004,9 @@ class Rongcloud {
 
             $ret = $this->curl('/group/dismiss', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1022,9 +1025,9 @@ class Rongcloud {
     public function groupRefresh($groupId, $groupName) {
     	try{
             if(empty($groupId))
-                throw new Exception('群 Id 不能为空');
+                throw new \Exception('群 Id 不能为空');
             if(empty($groupName))
-                throw new Exception('群名称 不能为空');
+                throw new \Exception('群名称 不能为空');
 
             $params = array(
                 'groupId' => $groupId,
@@ -1033,9 +1036,9 @@ class Rongcloud {
 
             $ret = $this->curl('/group/refresh', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1053,7 +1056,7 @@ class Rongcloud {
     public function groupUserQuery($groupId) {
     	try{
             if(empty($groupId))
-                throw new Exception('群 Id 不能为空');
+                throw new \Exception('群 Id 不能为空');
 
             $params = array(
                 'groupId' => $groupId
@@ -1061,9 +1064,9 @@ class Rongcloud {
 
             $ret = $this->curl('/group/user/query', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1084,11 +1087,11 @@ class Rongcloud {
     public function groupUserGagAdd($userId, $groupId, $minute) {
     	try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($groupId))
-                throw new Exception('群组 Id 不能为空');
+                throw new \Exception('群组 Id 不能为空');
             if(empty($minute))
-                throw new Exception('禁言时长 不能为空');
+                throw new \Exception('禁言时长 不能为空');
 
             if (is_array($userId)) {
             	$userId = array_values($userId);
@@ -1101,9 +1104,9 @@ class Rongcloud {
 
             $ret = $this->curl('/group/user/gag/add', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1122,9 +1125,9 @@ class Rongcloud {
     public function groupUserGagRollback($userId, $groupId) {
     	try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($groupId))
-                throw new Exception('群组 Id 不能为空');
+                throw new \Exception('群组 Id 不能为空');
 
             if (is_array($userId)) {
             	$userId = array_values($userId);
@@ -1136,9 +1139,9 @@ class Rongcloud {
 
             $ret = $this->curl('/group/user/gag/rollback', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1156,7 +1159,7 @@ class Rongcloud {
     public function groupUserGagList($groupId) {
     	try{
             if(empty($groupId))
-                throw new Exception('群组 Id 不能为空');
+                throw new \Exception('群组 Id 不能为空');
 
             $params = array(
                 'groupId' => $groupId
@@ -1164,9 +1167,9 @@ class Rongcloud {
 
             $ret = $this->curl('/group/user/gag/list', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1185,7 +1188,7 @@ class Rongcloud {
     public function chatroomCreate($data=array()) {
     	try{
             if(empty($data))
-                throw new Exception('聊天室信息 不能为空');
+                throw new \Exception('聊天室信息 不能为空');
 
             $params = array();
             foreach ($data as $key=>$value) {
@@ -1194,9 +1197,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/create', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1216,9 +1219,9 @@ class Rongcloud {
     public function chatroomJoin($userId, $chatroomId) {
     	try{
             if(empty($userId))
-                throw new Exception('要加入聊天室的用户 Id 不能为空');
+                throw new \Exception('要加入聊天室的用户 Id 不能为空');
             if(empty($chatroomId))
-                throw new Exception('要加入的聊天室 Id 不能为空');
+                throw new \Exception('要加入的聊天室 Id 不能为空');
 
             if (is_array($userId)) {
             	$userId = array_values($userId);
@@ -1230,9 +1233,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/join', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1250,7 +1253,7 @@ class Rongcloud {
     public function chatroomDestroy($chatroomId) {
     	try{
             if(empty($chatroomId))
-                throw new Exception('要销毁的聊天室 Id 不能为空');
+                throw new \Exception('要销毁的聊天室 Id 不能为空');
 
             $params = array(
                 'chatroomId' => $chatroomId
@@ -1258,9 +1261,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/destroy', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1278,7 +1281,7 @@ class Rongcloud {
     public function chatroomQuery($chatroomId) {
     	try{
             if(empty($chatroomId))
-                throw new Exception('要查询的聊天室Id 不能为空');
+                throw new \Exception('要查询的聊天室Id 不能为空');
 
             $params = array(
                 'chatroomId' => $chatroomId
@@ -1286,9 +1289,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/query', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1308,11 +1311,11 @@ class Rongcloud {
     public function chatroomUserQuery($chatroomId, $count=500, $order=1) {
     	try{
             if(empty($chatroomId))
-                throw new Exception('要查询的聊天室 Id 不能为空');
+                throw new \Exception('要查询的聊天室 Id 不能为空');
             if(empty($count))
-                throw new Exception('要获取的聊天室成员数 不能为空');
+                throw new \Exception('要获取的聊天室成员数 不能为空');
             if(empty($order))
-                throw new Exception('加入聊天室的先后顺序 不能为空');
+                throw new \Exception('加入聊天室的先后顺序 不能为空');
 
             $params = array(
                 'chatroomId' => $chatroomId,
@@ -1322,9 +1325,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/user/query', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1344,11 +1347,11 @@ class Rongcloud {
     public function chatroomUserGagAdd($userId, $chatroomId, $minute) {
     	try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($chatroomId))
-                throw new Exception('聊天室 Id 不能为空');
+                throw new \Exception('聊天室 Id 不能为空');
             if(empty($minute))
-                throw new Exception('禁言时长 不能为空');
+                throw new \Exception('禁言时长 不能为空');
 
             $params = array(
                 'userId' => $userId,
@@ -1358,9 +1361,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/user/gag/add', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1379,9 +1382,9 @@ class Rongcloud {
     public function chatroomUserGagRollback($userId, $chatroomId) {
     	try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($chatroomId))
-                throw new Exception('聊天室 Id 不能为空');
+                throw new \Exception('聊天室 Id 不能为空');
 
             $params = array(
                 'userId' => $userId,
@@ -1390,9 +1393,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/user/gag/rollback', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1410,7 +1413,7 @@ class Rongcloud {
     public function chatroomUserGagList($chatroomId) {
     	try{
             if(empty($chatroomId))
-                throw new Exception('聊天室 Id 不能为空');
+                throw new \Exception('聊天室 Id 不能为空');
 
             $params = array(
                 'chatroomId' => $chatroomId
@@ -1418,9 +1421,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/user/gag/list', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1440,11 +1443,11 @@ class Rongcloud {
     public function chatroomUserBlockAdd($userId, $chatroomId, $minute) {
     	try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($chatroomId))
-                throw new Exception('聊天室 Id 不能为空');
+                throw new \Exception('聊天室 Id 不能为空');
             if(empty($minute))
-                throw new Exception('禁言时长 不能为空');
+                throw new \Exception('禁言时长 不能为空');
 
             $params = array(
                 'userId' => $userId,
@@ -1454,9 +1457,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/user/block/add', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1475,9 +1478,9 @@ class Rongcloud {
     public function chatroomUserBlockRollback($userId, $chatroomId) {
     	try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($chatroomId))
-                throw new Exception('聊天室 Id 不能为空');
+                throw new \Exception('聊天室 Id 不能为空');
 
             $params = array(
                 'userId' => $userId,
@@ -1486,9 +1489,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/user/block/rollback', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1506,7 +1509,7 @@ class Rongcloud {
     public function chatroomUserBlockList($chatroomId) {
     	try{
             if(empty($chatroomId))
-                throw new Exception('聊天室 Id 不能为空');
+                throw new \Exception('聊天室 Id 不能为空');
 
             $params = array(
                 'chatroomId' => $chatroomId
@@ -1514,9 +1517,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/user/block/list', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1535,7 +1538,7 @@ class Rongcloud {
     public function chatroomMessageStopDistribution($chatroomId) {
     	try{
             if(empty($chatroomId))
-                throw new Exception('聊天室 Id 不能为空');
+                throw new \Exception('聊天室 Id 不能为空');
 
             $params = array(
                 'chatroomId' => $chatroomId
@@ -1543,9 +1546,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/message/stopDistribution', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1563,7 +1566,7 @@ class Rongcloud {
     public function chatroomMessageResumeDistribution($chatroomId) {
     	try{
             if(empty($chatroomId))
-                throw new Exception('聊天室 Id 不能为空');
+                throw new \Exception('聊天室 Id 不能为空');
 
             $params = array(
                 'chatroomId' => $chatroomId
@@ -1571,9 +1574,9 @@ class Rongcloud {
 
             $ret = $this->curl('/chatroom/message/resumeDistribution', $params);
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1593,9 +1596,9 @@ class Rongcloud {
     public function userTagSet($userId, $tags=array()) {
     	try{
             if(empty($userId))
-                throw new Exception('用户 Id 不能为空');
+                throw new \Exception('用户 Id 不能为空');
             if(empty($tags))
-                throw new Exception('用户标签 不能为空');
+                throw new \Exception('用户标签 不能为空');
 
             if (is_array($tags)) {
             	$tags = array_values($tags);
@@ -1607,9 +1610,9 @@ class Rongcloud {
 
             $ret = $this->curl('/user/tag/set', $params, 'json');
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1644,23 +1647,23 @@ class Rongcloud {
     public function pushMessage($platform=array(), $fromuserid, $audience=array(), $message=array(), $notification=array()) {
     	try{
             if(empty($platform))
-                throw new Exception('目标操作系统 不能为空');
+                throw new \Exception('目标操作系统 不能为空');
             if(empty($fromuserid))
-                throw new Exception('发送人用户 Id 不能为空');
+                throw new \Exception('发送人用户 Id 不能为空');
             if(empty($audience))
-                throw new Exception('推送条件 不能为空');
+                throw new \Exception('推送条件 不能为空');
             if(!isset($audience['is_to_all']))
-                throw new Exception('是否全部推送 不能为空');
+                throw new \Exception('是否全部推送 不能为空');
             if(empty($message))
-                throw new Exception('发送消息 不能为空');
+                throw new \Exception('发送消息 不能为空');
             if(empty($message['content']))
-                throw new Exception('发送消息内容 不能为空');
+                throw new \Exception('发送消息内容 不能为空');
             if(empty($message['objectName']))
-                throw new Exception('消息类型 不能为空');
+                throw new \Exception('消息类型 不能为空');
             if(empty($notification))
-                throw new Exception('推送消息 不能为空');
+                throw new \Exception('推送消息 不能为空');
             if(empty($notification['alert']))
-                throw new Exception('默认推送消息内容 不能为空');
+                throw new \Exception('默认推送消息内容 不能为空');
 
             $params = array(
                 'platform' => $platform,
@@ -1672,9 +1675,9 @@ class Rongcloud {
             
             $ret = $this->curl('/push', $params, 'json');
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1705,15 +1708,15 @@ class Rongcloud {
     public function push($platform=array(), $audience=array(), $notification=array()) {
     	try{
             if(empty($platform))
-                throw new Exception('目标操作系统 不能为空');
+                throw new \Exception('目标操作系统 不能为空');
             if(empty($audience))
-                throw new Exception('推送条件 不能为空');
+                throw new \Exception('推送条件 不能为空');
             if(!isset($audience['is_to_all']))
-                throw new Exception('是否全部推送 不能为空');
+                throw new \Exception('是否全部推送 不能为空');
             if(empty($notification))
-                throw new Exception('推送消息 不能为空');
+                throw new \Exception('推送消息 不能为空');
             if(empty($notification['alert']))
-                throw new Exception('默认推送消息内容 不能为空');
+                throw new \Exception('默认推送消息内容 不能为空');
 
             $params = array(
                 'platform' => $platform,
@@ -1723,9 +1726,9 @@ class Rongcloud {
             
             $ret = $this->curl('/push', $params, 'json');
             if(empty($ret))
-                throw new Exception('请求失败');
+                throw new \Exception('请求失败');
             return $ret;
-        }catch (Exception $e) {
+        }catch (\Exception $e) {
         	$message = date('[ c ]').' '.__METHOD__.' '.$e->getMessage()."\r\n";
         	if ($this->is_record) {
         		error_log($message, 3, $this->destination, '');
@@ -1815,7 +1818,7 @@ class Rongcloud {
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,false); //处理http证书问题
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-        curl_setopt($ch, CURLOPT_DNS_USE_GLOBAL_CACHE, false);
+//         curl_setopt($ch, CURLOPT_DNS_USE_GLOBAL_CACHE, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $ret = curl_exec($ch);
         if (false === $ret) {
