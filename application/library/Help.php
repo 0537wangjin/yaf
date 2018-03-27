@@ -359,7 +359,7 @@ class Help
         $cur > 1 ? $pagestr = '<li class="paginate_button previous"><a href="' . $url . '1' . $url_suffix . '">首页</a></li><li class="paginate_button previous"><a href="' . $url . ($cur - 1) . $url_suffix . '">上一页</a></li>' : $pagestr = '<li class="paginate_button previous disabled"><a href="#">首页</a></li><li class="paginate_button previous disabled"><a href="#">上一页</a>';
 
         for ($i = $page_start; $i < $page_end; $i++) {
-            $pagestr .= ($i == $cur) ? '<li class="paginate_button active"><a href="#">' . $cur . '</a></li>' : '<li class="paginate_button"><a href="' . $url . $i . $url_suffix . '">' . $i . '</a></li>';
+            $pagestr .= ($i == $cur) ? '<li class="paginate_button am-active"><a href="#">' . $cur . '</a></li>' : '<li class="paginate_button"><a href="' . $url . $i . $url_suffix . '">' . $i . '</a></li>';
         }
 
         if ($total == 0) {
@@ -398,8 +398,9 @@ class Help
         $fileUpload->setAllowMimeType($type);
         $fileUpload->setMaxFileSize($size);
         $fileUpload->setAutoFilename();
-        $fileUpload->save();
+        $fileUpload->saveSingle();
         $fileInfo = $fileUpload->getInfo();
+        //echo $subdir . $fileInfo->filename;die;
         if ($fileUpload->getStatus()) {
             if ($return == 'url')
                 return $subdir . $fileInfo->filename;
@@ -409,6 +410,41 @@ class Help
         return false;
     }
 
+    /**
+     * 多图上传
+     */
+    public static function uploads($input, $dir, $return = "url", $type = "image", $size = "10M")
+    {
+        if (empty($_FILES[$input]['tmp_name'])) {
+            return false;
+        }
+        $subdir1 = date('Ym');
+        $subdir2 = date('d');
+        $subdir = $dir . '/' . $subdir1 . '/' . $subdir2 . '/';
+
+        $config = \Yaf_Registry::get('configarr');
+        $url = $config['application']['site']['uploadUri'];
+        $dir = PUBLIC_PATH . $url . $subdir;
+        $dir = str_replace('//', '/', $dir);
+
+
+        $fileUpload = new FileUpload();
+        $fileUpload->setInput($input);
+        $fileUpload->setDestinationDirectory($dir, true);
+        $fileUpload->setAllowMimeType($type);
+        $fileUpload->setMaxFileSize($size);
+        $fileUpload->setAutoFilename();
+        $fileUpload->save();
+        $fileInfo = $fileUpload->getInfo();
+        //echo $subdir . $fileInfo->filename;die;
+        if ($fileUpload->getStatus()) {
+            if ($return == 'url')
+                return $subdir . $fileInfo->filename;
+            else
+                return $fileInfo;
+        }
+        return false;
+    }
     /**
      *  获取用户的ip
      */
@@ -811,18 +847,6 @@ class Help
         return $str;
     }
 
-    public static function emoji($str)
-    {
-        $str = str_replace('[偷笑]', '<img class="emoji" src="http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/19/heia_org.gif" />', $str);
-        $str = str_replace('[二哈]', '<img class="emoji" src="http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/74/moren_hashiqi_org.png" />', $str);
-        $str = str_replace('[嘻嘻]', '<img class="emoji" src="http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/0b/tootha_org.gif" />', $str);
-        $str = str_replace('[鼓掌]', '<img class="emoji" src="http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/36/gza_org.gif" />', $str);
-        $str = str_replace('[悲伤]', '<img class="emoji" src="http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/1a/bs_org.gif" />', $str);
-        $str = str_replace('[微笑]', '<img class="emoji" src="http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/5c/huanglianwx_org.gif" />', $str);
-        $str = str_replace('[生病]', '<img class="emoji" src="http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/b6/sb_org.gif" />', $str);
-        $str = str_replace('[摊手]', '<img class="emoji" src="http://img.t.sinajs.cn/t4/appstyle/expression/ext/normal/09/pcmoren_tanshou_org.png" />', $str);
-        return $str;
-    }
 
     /**
      * 新浪微博图片大图转小图
@@ -922,9 +946,9 @@ class Help
         foreach ($post_array as $parm) {
             if (empty(self::getp($parm))) {
                 if ($type) {
-                    die($parm . " 参数不能为空");
+                    self::print_json('101', $parm . " 参数不能为空");
                 } else {
-                    self::sys_out_fail($parm . " 参数不能为空", 100);
+                    self::print_json('101', $parm . " 参数不能为空");
                 }
             }
         }
@@ -940,9 +964,9 @@ class Help
         foreach ($post_array as $parm) {
             if (empty(self::getg($parm))) {
                 if ($type) {
-                    die($parm . " 参数不能为空");
+                    self::print_json('101', $parm . " 参数不能为空");
                 } else {
-                    self::sys_out_fail($parm . " 参数不能为空", 100);
+                    self::print_json('101', $parm . " 参数不能为空");
                 }
             }
         }
@@ -1006,7 +1030,8 @@ class Help
      */
     public static function squarePoint($lng, $lat, $radius = 10)
     {
-
+        $lng = (double)$lng;
+        $lat = (double)$lat;
         $dlng = 2 * asin(sin($radius / 12742) / cos(deg2rad($lat)));//12742为地球直径
         $dlng = rad2deg($dlng);
 
@@ -1051,5 +1076,24 @@ class Help
             return false;
         }
     }
+
+    public static function utf8_to_unicode_str($utf8)
+    {
+        $return = '';
+
+        for ($i = 0; $i < mb_strlen($utf8); $i++) {
+
+            $char = mb_substr($utf8, $i, 1);
+
+            // 3字节是汉字，不转换，4字节才是 emoji
+            if (strlen($char) > 3) {
+                $char = trim(json_encode($char), '"');
+            }
+            $return .= $char;
+        }
+        return $return;
+    }
+
+
 }
 
