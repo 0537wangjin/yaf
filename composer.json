@@ -10,11 +10,11 @@
         }
     ],
     "require": {
-        "twig/twig": "",
-        "php": "",
-        "ext-curl": "",
-        "guzzlehttp/guzzle": "",
-        "firebase/php-jwt": ""
+        "twig/twig": "*",
+        "php": "*",
+        "ext-curl": "*",
+        "guzzlehttp/guzzle": "*",
+        "firebase/php-jwt": "*"
     },
     "repositories": {
         "packagist": {
