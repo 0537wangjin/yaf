@@ -390,8 +390,6 @@ class Help
         $url = $config['application']['site']['uploadUri'];
         $dir = PUBLIC_PATH . $url . $subdir;
         $dir = str_replace('//', '/', $dir);
-
-
         $fileUpload = new FileUpload();
         $fileUpload->setInput($input);
         $fileUpload->setDestinationDirectory($dir, true);
@@ -435,15 +433,7 @@ class Help
         $fileUpload->setMaxFileSize($size);
         $fileUpload->setAutoFilename();
         $fileUpload->save();
-        $fileInfo = $fileUpload->getInfo();
-        //echo $subdir . $fileInfo->filename;die;
-        if ($fileUpload->getStatus()) {
-            if ($return == 'url')
-                return $subdir . $fileInfo->filename;
-            else
-                return $fileInfo;
-        }
-        return false;
+        return $fileUpload->getUrls();
     }
     /**
      *  获取用户的ip
