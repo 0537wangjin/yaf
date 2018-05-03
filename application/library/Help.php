@@ -326,46 +326,35 @@ class Help
         if ($cur <= 0) {
             $cur = 1;
         }
-
         if ($total == 0 || $total < $size) {
             $page_num = 0;
         } else {
             $page_num = floor($total / $size);
         }
-
         if (($total % $size) > 0) {
             $page_num++;
         }
-
         if ($cur > $page_num) {
             $cur = $page_num;
         }
-
         $cur > 5 ? $page_start = $cur - 4 : $page_start = 1;
-
         if ($page_start > ($page_num - 9)) {
             $page_start = $page_num - 8;
         }
-
         if ($page_start < 1) {
             $page_start = 1;
         }
-
         $cur < 5 ? $page_end = 10 : $page_end = $cur + 5;
         if ($page_end > $page_num) {
             $page_end = $page_num + 1;
         }
-
         $cur > 1 ? $pagestr = '<li class="paginate_button previous"><a href="' . $url . '1' . $url_suffix . '">首页</a></li><li class="paginate_button previous"><a href="' . $url . ($cur - 1) . $url_suffix . '">上一页</a></li>' : $pagestr = '<li class="paginate_button previous disabled"><a href="#">首页</a></li><li class="paginate_button previous disabled"><a href="#">上一页</a>';
-
         for ($i = $page_start; $i < $page_end; $i++) {
-            $pagestr .= ($i == $cur) ? '<li class="paginate_button am-active"><a href="#">' . $cur . '</a></li>' : '<li class="paginate_button"><a href="' . $url . $i . $url_suffix . '">' . $i . '</a></li>';
+            $pagestr .= ($i == $cur) ? '<li class="paginate_button active"><a href="#">' . $cur . '</a></li>' : '<li class="paginate_button"><a href="' . $url . $i . $url_suffix . '">' . $i . '</a></li>';
         }
-
         if ($total == 0) {
             $pagestr .= '<li class="active"><a href="#">1</a></li>';
         }
-
         $cur < $page_num ? $pagestr .= '<li class="paginate_button next"><a href="' . $url . ($cur + 1) . $url_suffix . '">下一页</a></li><li class="paginate_button next"><a href="' . $url . $page_num . $url_suffix . '">尾页</a></li>' : $pagestr .= '<li class="paginate_button next disabled"><a href="#">下一页</a></li><li class="paginate_button next disabled"><a href="#">尾页</a></li>';
         return $pagestr;
     }
