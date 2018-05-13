@@ -127,6 +127,21 @@ if ($res) {
     $p['titlepicthumb'] = $p['titlepic'] . '_thumb.jpg';
 }
 ````
+#### 多图上传
+````
+$avatar = Help::uploads('titlepic', $dir);
+if (!empty($avatar)) {
+    $subdir = $dir . '/' . date('Ym') . '/' . date('d') . '/';
+    for ($i = 0; $i < count($avatar); $i++) {
+        $urlname = sha1(mt_rand(1, 9999) . uniqid()) . '.jpg';
+        $titlepic = $this->uploadToUpyun(PUBLIC_PATH . $subdir . $avatar[$i], $subdir, $urlname);
+        $add['picurl'] = $titlepic;
+        $this->db->insert('ju_star_pic', $add);
+    }
+    //. Success
+}
+````
+
 #### base64图片上传
 ````
 public function evaluateSaveAction()
@@ -283,6 +298,13 @@ private function uploadToUpyun($filename, $updir, $urlname)
     @unlink($filename);
     $imgurl = 'http://cdn.huyahaha.com/tools/' . $updir . '/' . $urlname;
     return $imgurl;
+}
+$avatar = Help::upload('avatar', 'upload');
+if (!empty($avatar)) {
+    $subdir = $dir . '/' . date('Ym') . '/' . date('d') . '/';
+    $urlname = sha1(mt_rand(1, 9999) . uniqid()) . '.jpg';
+    $titlepic = $this->uploadToUpyun(PUBLIC_PATH . $avatar, $subdir, $urlname);
+    $param['avatar'] = $titlepic;
 }
 ````
 
