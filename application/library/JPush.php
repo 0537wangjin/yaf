@@ -55,7 +55,7 @@ class JPush
                 "alert"=>$content,
                 "badge" => "1",
                 "sound" => "default",
-                // "extras"=>array("type"=>$m_type, "txt"=>$m_txt)
+                "extras" => $extras
             ),
         );
 
@@ -69,7 +69,7 @@ class JPush
         $data['options'] = array(
             "sendno" => time(),
             "time_to_live" => $m_time,     //保存离线时间的秒数默认为一天
-            "apns_production" => false,        //指定 APNS 通知发送环境：false 开发环境，true生产环境。
+            "apns_production" => true,        //指定 APNS 通知发送环境：false 开发环境，true生产环境。
         );
         $param = json_encode($data);
         $res = $this->push_curl($param, $header);
