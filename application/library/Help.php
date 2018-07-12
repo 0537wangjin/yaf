@@ -902,6 +902,7 @@ class Help
      */
     public static function print_json($errcode, $data, $id = 0)
     {
+        header('Content-type: application/json');
         $json = array();
         $json['errcode'] = intval($errcode);
         if (is_array($data)) {
@@ -955,7 +956,11 @@ class Help
     public static function sys_check_token()
     {
         $key = Yaf_Registry::get('config')['application']['app']['appkey'];
-        $decoded = \Firebase\JWT\JWT::decode(self::getp('token'), $key, array('HS256'));
+        try {
+            $decoded = \Firebase\JWT\JWT::decode(self::getp('token'), $key, array('HS256'));
+        } catch (Exception $e) {
+            self::print_json(101, $e->getMessage());
+        }
         return $decoded;
     }
 
