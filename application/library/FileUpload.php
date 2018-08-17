@@ -79,6 +79,9 @@ class FileUpload
             'video/x-ms-wmv',
             'video/x-flv',
         ),
+        'audio' => array(
+            'audio/mp3',
+        ),
     );
 
     // 创建的目录权限
