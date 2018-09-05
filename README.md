@@ -69,13 +69,13 @@ $this->db->get('ju_user', array('id', 'username'), array('username' => $data['us
 // 开始事务
 $res = $this->db->action(function ($db) use ($id) {
     // 取消默认
-    $sql1 = $db->update('sys_address', ['rec' => 0], ['client_id' => $this->uid]);
-    if ($sql1->rowCount() <  1){
+    $db->update('sys_address', ['rec' => 0], ['client_id' => $this->uid]);
+    if ($db->error()[0] != '00000') {
         return false;
     }
     // 设置新默认
-    $sql2 = $db->update('sys_address', ['rec' => 1], ['id' => $id]);
-    if ($sql2->rowCount() <  1){
+    $db->update('sys_address', ['rec' => 1], ['id' => $id]);
+    if ($db->error()[0] != '00000') {
         return false;
     }
 });
