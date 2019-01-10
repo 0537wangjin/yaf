@@ -19,9 +19,7 @@ class IndexController extends BaseController
      */
     public function indexAction()
     {
-        $assign = array(
-            'pagetitle' => 'Yaf'
-        );
-        echo $this->twig->render('index/index.php', $assign);
+        $this->assign['pagetitle'] = 'Yaf_Demo';
+        echo $this->twig->render('index/index.twig', $this->assign);
     }
 }
