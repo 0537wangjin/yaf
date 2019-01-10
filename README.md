@@ -13,6 +13,7 @@
 - Upyun
 - 迅搜(xunsearch)
 - Swoole
+- JWT
 
 ## 安装说明
 
