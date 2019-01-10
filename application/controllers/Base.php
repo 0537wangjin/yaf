@@ -20,6 +20,7 @@ class BaseController extends Yaf_Controller_Abstract
         $this->twig = new \Twig_Environment($loader, array(
             /* 'cache' => './compilation_cache', */
         ));
+        $this->arrConfig = Yaf_Application::app()->getConfig();
         $this->db = new \Medoo\Medoo([
             'database_type' => 'mysql',
             'database_name' => $this->arrConfig->application->db->database,

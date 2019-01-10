@@ -23,7 +23,7 @@ class Bootstrap extends Yaf_Bootstrap_Abstract
     // 是否显示错误提示
     public function _initError(Yaf_Dispatcher $dispatcher)
     {
-        if ($this->arrConfig->application->debug) {
+        if (Yaf_Application::app()->getConfig()->application->debug) {
             error_reporting(-1);
         } else {
             error_reporting(0);
