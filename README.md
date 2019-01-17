@@ -308,7 +308,18 @@ if (!empty($avatar)) {
     $param['avatar'] = $titlepic;
 }
 ````
-
+#### Bootstrap4下分页修改
+````
+library/Help.php修改 public static function pager() 函数替换下面代码
+$cur > 1 ? $pagestr = '<li class="page-item previous"><a class="page-link" href="' . $url . '1' . $url_suffix . '">首页</a></li><li class="page-item previous"><a class="page-link" href="' . $url . ($cur - 1) . $url_suffix . '">上一页</a></li>' : $pagestr = '<li class="page-item previous disabled"><a class="page-link" href="#">首页</a></li><li class="page-item previous disabled"><a class="page-link" href="#">上一页</a>';
+for ($i = $page_start; $i < $page_end; $i++) {
+    $pagestr .= ($i == $cur) ? '<li class="page-item active"><a class="page-link" href="#">' . $cur . '</a></li>' : '<li class="page-item"><a class="page-link" href="' . $url . $i . $url_suffix . '">' . $i . '</a></li>';
+}
+if ($total == 0) {
+    $pagestr .= '<li class="active"><a class="page-link" href="#">1</a></li>';
+}
+$cur < $page_num ? $pagestr .= '<li class="page-item next"><a class="page-link" href="' . $url . ($cur + 1) . $url_suffix . '">下一页</a></li><li class="page-item next"><a class="page-link" href="' . $url . $page_num . $url_suffix . '">尾页</a></li>' : $pagestr .= '<li class="page-item next disabled"><a class="page-link" href="#">下一页</a></li><li class="page-item next disabled"><a class="page-link" href="#">尾页</a></li>';
+````
 #### 小技巧
 - 获取当前控制器
 <code>
