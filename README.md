@@ -79,8 +79,9 @@ $res = $this->db->action(function ($db) use ($id) {
     if ($db->error()[0] != '00000') {
         return false;
     }
+    return true;
 });
-if ($res == true) {
+if ($res) {
     die('操作成功!');
 } else {
     die('系统出错!');
