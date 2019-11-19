@@ -10,12 +10,12 @@
         }
     ],
     "require": {
-        "twig/twig": "*",
+        "twig/twig": "v2.4.8",
         "php": "*",
         "ext-curl": "*",
         "guzzlehttp/guzzle": "*",
-        "firebase/php-jwt": "*",
-        "upyun/sdk": "*"
+        "firebase/php-jwt": "v5.0.0",
+        "upyun/sdk": "3.3.0"
     },
     "repositories": {
         "packagist": {
