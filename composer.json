@@ -14,7 +14,8 @@
         "php": "*",
         "ext-curl": "*",
         "guzzlehttp/guzzle": "*",
-        "firebase/php-jwt": "*"
+        "firebase/php-jwt": "*",
+        "upyun/sdk": "*"
     },
     "repositories": {
         "packagist": {

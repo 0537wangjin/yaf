@@ -78,7 +78,7 @@ class Help
     public static function fbu($url = '')
     {
         $uri = $url;
-        $config = \Yaf_Registry::get('configarr');
+        $config = Yaf_Application::app()->getConfig();
         $url = rtrim($config['application']['site']['uploadUrl'], '/') . '/' . ltrim($url, '/');
 
         if (stripos($url, 'http://') === false) {
@@ -100,7 +100,7 @@ class Help
      */
     public static function sfbu($url = '')
     {
-        $config = \Yaf_Registry::get('configarr');
+        $config = Yaf_Application::app()->getConfig();
         $url = $config['application']['site']['uploadUri'] . $url;
         return PUBLIC_PATH . $url;
     }
@@ -194,7 +194,7 @@ class Help
             }
             $route = $moduleName . '/' . $controllerName . '/' . $actionName;
         }
-        $config = \Yaf_Registry::get('configarr');
+        $config = Yaf_Application::app()->getConfig();
         $url = $config['application']['site']['baseUri'];
         $url = $url . $route;
         $url = rtrim($url, '/');
@@ -268,14 +268,15 @@ class Help
      */
     public static function setCookie($key, $value, $time)
     {
-        $config = \Yaf_Registry::get('configarr');
+        $config = Yaf_Application::app()->getConfig();
         $pre = $config['application']['cookie']['pre'];
-
         $key = $pre . $key;
+        /*
         if ($value != '1') {
             $value = base64_encode(serialize($value));
-        }
-        setcookie($key, $value, time() + $time, '/', $config['application']['cookie']['domain']);
+        }*/
+        //$config['application']['cookie']['domain']
+        setcookie($key, $value, time() + $time, '/');
     }
 
     /**
@@ -283,15 +284,13 @@ class Help
      */
     public static function getCookie($key, $value = "")
     {
-        $config = \Yaf_Registry::get('configarr');
+        $config = Yaf_Application::app()->getConfig();
         $pre = $config['application']['cookie']['pre'];
-
         $key = $pre . $key;
         $value = isset($_COOKIE[$key]) ? $_COOKIE[$key] : $value;
-
-        if ($value) {
+        /*if ($value) {
             $value = unserialize(base64_decode($value));
-        }
+        }*/
         return $value;
     }
 
@@ -349,14 +348,14 @@ class Help
         if ($page_end > $page_num) {
             $page_end = $page_num + 1;
         }
-        $cur > 1 ? $pagestr = '<li class="paginate_button previous"><a href="' . $url . '1' . $url_suffix . '">首页</a></li><li class="paginate_button previous"><a href="' . $url . ($cur - 1) . $url_suffix . '">上一页</a></li>' : $pagestr = '<li class="paginate_button previous disabled"><a href="#">首页</a></li><li class="paginate_button previous disabled"><a href="#">上一页</a>';
+        $cur > 1 ? $pagestr = '<li class="page-item previous"><a class="page-link" href="' . $url . '1' . $url_suffix . '">首页</a></li><li class="page-item previous"><a class="page-link" href="' . $url . ($cur - 1) . $url_suffix . '">上一页</a></li>' : $pagestr = '<li class="page-item previous disabled"><a class="page-link" href="#">首页</a></li><li class="page-item previous disabled"><a class="page-link" href="#">上一页</a>';
         for ($i = $page_start; $i < $page_end; $i++) {
-            $pagestr .= ($i == $cur) ? '<li class="paginate_button active"><a href="#">' . $cur . '</a></li>' : '<li class="paginate_button"><a href="' . $url . $i . $url_suffix . '">' . $i . '</a></li>';
+            $pagestr .= ($i == $cur) ? '<li class="page-item active"><a class="page-link" href="#">' . $cur . '</a></li>' : '<li class="page-item"><a class="page-link" href="' . $url . $i . $url_suffix . '">' . $i . '</a></li>';
         }
         if ($total == 0) {
-            $pagestr .= '<li class="active"><a href="#">1</a></li>';
+            $pagestr .= '<li class="active"><a class="page-link" href="#">1</a></li>';
         }
-        $cur < $page_num ? $pagestr .= '<li class="paginate_button next"><a href="' . $url . ($cur + 1) . $url_suffix . '">下一页</a></li><li class="paginate_button next"><a href="' . $url . $page_num . $url_suffix . '">尾页</a></li>' : $pagestr .= '<li class="paginate_button next disabled"><a href="#">下一页</a></li><li class="paginate_button next disabled"><a href="#">尾页</a></li>';
+        $cur < $page_num ? $pagestr .= '<li class="page-item next"><a class="page-link" href="' . $url . ($cur + 1) . $url_suffix . '">下一页</a></li><li class="page-item next"><a class="page-link" href="' . $url . $page_num . $url_suffix . '">尾页</a></li>' : $pagestr .= '<li class="page-item next disabled"><a class="page-link" href="#">下一页</a></li><li class="page-item next disabled"><a class="page-link" href="#">尾页</a></li>';
         return $pagestr;
     }
 
@@ -802,7 +801,7 @@ class Help
 
     public static function formatTime($time)
     {
-        $rtime = date('Y/m/d H:i', $time);
+        $rtime = date('H:i', $time);
         $htime = date('H:i', $time);
         $time = time() - $time;
         if ($time < 60) {
@@ -866,7 +865,7 @@ class Help
      */
     public static function sys_get_token($username)
     {
-        $key = Yaf_Registry::get('config')['application']['app']['appkey'];
+        $key = 'ef45RWjT';
         $time = strtotime(date('Y-m-d'));
         $token = array(
             "username" => $username,
@@ -926,9 +925,9 @@ class Help
         foreach ($post_array as $parm) {
             if (empty(self::getp($parm))) {
                 if ($type) {
-                    self::print_json('101', $parm . " 参数不能为空");
+                    self::print_json(100, $parm . " 参数不能为空");
                 } else {
-                    self::print_json('101', $parm . " 参数不能为空");
+                    self::print_json(100, $parm . " 参数不能为空");
                 }
             }
         }
@@ -944,20 +943,20 @@ class Help
         foreach ($post_array as $parm) {
             if (empty(self::getg($parm))) {
                 if ($type) {
-                    self::print_json('101', $parm . " 参数不能为空");
+                    self::print_json(100, $parm . " 参数不能为空");
                 } else {
-                    self::print_json('101', $parm . " 参数不能为空");
+                    self::print_json(100, $parm . " 参数不能为空");
                 }
             }
         }
     }
 
     // jwt
-    public static function sys_check_token()
+    public static function sys_check_token($token)
     {
-        $key = Yaf_Registry::get('config')['application']['app']['appkey'];
+        $key = 'ef45RWjT';
         try {
-            $decoded = \Firebase\JWT\JWT::decode(self::getp('token'), $key, array('HS256'));
+            $decoded = \Firebase\JWT\JWT::decode($token, $key, array('HS256'));
         } catch (Exception $e) {
             self::print_json(101, $e->getMessage());
         }
@@ -981,7 +980,7 @@ class Help
                 $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
                 break;
             case 'NUMBER':
-                $chars = '0123456789';
+                $chars = '123456789';
                 break;
             default :
                 $chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
